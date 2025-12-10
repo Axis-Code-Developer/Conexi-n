@@ -16,6 +16,11 @@ const navItems = [
 export function Navbar() {
     const pathname = usePathname();
 
+    const allowedPaths = ["/calendar", "/team", "/activities", "/resources"];
+    const shouldShowNavbar = allowedPaths.some(path => pathname.startsWith(path));
+
+    if (!shouldShowNavbar) return null;
+
     return (
         <div className="w-full flex items-center gap-4 px-8 pt-8 pb-0 shrink-0">
             {/* Logo */}

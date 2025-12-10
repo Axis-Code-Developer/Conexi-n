@@ -29,7 +29,11 @@ export async function POST(req: Request) {
 
         return NextResponse.json({ success: true, user: { id: user.id, name: user.name, email: user.email } });
     } catch (error) {
-        console.error("Setup Error:", error);
-        return NextResponse.json({ error: "Error interno." }, { status: 500 });
+        console.error("Setup Error Details:", error);
+        // Returning detailed error to client temporarily for debugging on Hostinger
+        return NextResponse.json(
+            { error: `Error interno: ${(error as any)?.message || "Detalles desconocidos"}` },
+            { status: 500 }
+        );
     }
 }
