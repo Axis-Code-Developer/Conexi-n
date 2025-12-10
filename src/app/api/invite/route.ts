@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { sendInvitationEmail } from "@/lib/zeptomail";
 import crypto from "crypto";
 
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
     try {
