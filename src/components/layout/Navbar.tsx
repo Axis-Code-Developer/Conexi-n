@@ -61,7 +61,7 @@ export function Navbar() {
             {/* Version Indicator */}
             <div className="ml-auto flex items-center gap-2">
                 <span className="text-xs font-mono text-gray-500 bg-gray-900/50 px-2 py-1 rounded-md border border-gray-800">
-                    v0.3.0-alpha
+                    v0.3.1-alpha
                 </span>
             </div>
         </div>
