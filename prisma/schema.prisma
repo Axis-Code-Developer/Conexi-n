@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  name           String
+  role           Role      @default(MEMBER)
+  ministryId     String?
+  ministry       Ministry? @relation(fields: [ministryId], references: [id])
+  assignments    Assignment[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Ministry {
+  id          String   @id @default(cuid())
+  name        String
+  users       User[]
+  events      Event[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Event {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  startTime   DateTime?
+  endTime     DateTime?
+  type        EventType    @default(GENERAL)
+  ministryId  String?
+  ministry    Ministry?    @relation(fields: [ministryId], references: [id])
+  assignments Assignment[]
+  tags        Tag[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Assignment {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id])
+  role      String?  // e.g., "Worship Leader", "Usher"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tag {
+  id      String  @id @default(cuid())
+  name    String
+  color   String? // For UI display
+  events  Event[]
+}
+
+model Conflict {
+  id          String   @id @default(cuid())
+  title       String
+  date        DateTime
+  description String?
+  source      String?   // "External Ministry", "Main Church Calendar"
+  affectedUserIds String? // JSON string or relation could be better, keeping simple for now
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  LEADER
+  MEMBER
+}
+
+enum EventType {
+  GENERAL
+  SERVICE
+  PRACTICE
+  SPECIAL
+}

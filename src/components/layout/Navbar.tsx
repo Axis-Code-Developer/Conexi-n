@@ -1,0 +1,59 @@
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { Calendar, Users, Activity, Package } from "lucide-react";
+import logo from "@/assets/logo.png";
+
+const navItems = [
+    { name: "Calendario", href: "/calendar", icon: Calendar },
+    { name: "Equipo", href: "/team", icon: Users },
+    { name: "Actividades", href: "/activities", icon: Activity },
+    { name: "Recursos", href: "/resources", icon: Package },
+];
+
+export function Navbar() {
+    const pathname = usePathname();
+
+    return (
+        <div className="w-full flex items-center gap-4 px-8 pt-8 pb-0 shrink-0">
+            {/* Logo */}
+            <div className="relative shrink-0 w-[46px] h-[46px] rounded-lg border-[0.6px] border-white shadow-md overflow-hidden bg-white">
+                <Image
+                    src={logo}
+                    alt="Ministry Logo"
+                    fill
+                    className="object-cover"
+                />
+            </div>
+
+            {/* Navigation Buttons */}
+            <nav className="flex items-center gap-2">
+                {navItems.map((item) => {
+                    const isActive = pathname.startsWith(item.href);
+                    return (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className={cn(
+                                "flex items-center gap-2 px-4 py-2 rounded-lg border-[0.6px] border-white shadow-md transition-all duration-200",
+                                isActive
+                                    ? "bg-primary text-primary-foreground"
+                                    : "bg-white text-foreground hover:bg-gray-50"
+                            )}
+                        >
+                            <div className="w-5 h-5 relative shrink-0">
+                                <item.icon className="w-full h-full" strokeWidth={1.5} />
+                            </div>
+                            <span className="text-base font-normal font-display leading-normal text-center whitespace-nowrap">
+                                {item.name}
+                            </span>
+                        </Link>
+                    );
+                })}
+            </nav>
+        </div>
+    );
+}
