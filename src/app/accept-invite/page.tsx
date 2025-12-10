@@ -1,67 +1,138 @@
-import { PrismaClient } from "@prisma/client";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { CheckCircle, XCircle } from "lucide-react";
+"use client";
 
-import { prisma } from "@/lib/prisma";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
 
-export default async function AcceptInvitePage({
-    searchParams,
-}: {
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }> // Next.js 15+ async searchParams
-}) {
-    const { token } = await searchParams; // Await searchParams in Next 15
+function RegisterForm() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const token = searchParams.get("token");
 
-    if (!token || typeof token !== 'string') {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-                <XCircle className="w-16 h-16 text-red-500 mb-4" />
-                <h1 className="text-2xl font-bold mb-2">Token inválido</h1>
-                <p>El enlace de invitación no es válido.</p>
-            </div>
-        );
+    const [loading, setLoading] = useState(false);
+    const [verifying, setVerifying] = useState(true);
+    const [inviteData, setInviteData] = useState<{ email: string; name: string } | null>(null);
+    const [error, setError] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    useEffect(() => {
+        if (!token) {
+            setVerifying(false);
+            setError("Token no proporcionado");
+            return;
+        }
+
+        // Verify token validity via API (need a new endpoint or check existing invite status)
+        // For now, implementing client-side 'verify' by calling a GET endpoint we should create
+        // Or simpler: Just assume pending until we submit form which will fail if invalid.
+        // BUT user wants to see their email. 
+        // Let's create a small server action or API route to get invite details by token.
+
+        fetch(`/api/invite/verify?token=${token}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    setError(data.error);
+                } else {
+                    setInviteData(data);
+                }
+            })
+            .catch(() => setError("Error verificando invitación"))
+            .finally(() => setVerifying(false));
+
+    }, [token]);
+
+
+    const handleRegister = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (password !== confirmPassword) {
+            setError("Las contraseñas no coinciden");
+            return;
+        }
+
+        setLoading(true);
+        setError("");
+
+        try {
+            const res = await fetch("/api/register", {
+                method: "POST",
+                body: JSON.stringify({ token, password }),
+                headers: { "Content-Type": "application/json" }
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                router.push("/login?registered=true");
+            } else {
+                setError(data.error || "Error al registrar");
+            }
+        } catch {
+            setError("Error de conexión");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (verifying) {
+        return <div className="flex h-screen items-center justify-center bg-[#313131] text-white"><Loader2 className="animate-spin h-8 w-8" /></div>;
     }
 
-    const invitation = await prisma.invitation.findUnique({
-        where: { token },
-    });
-
-    if (!invitation || invitation.status !== 'PENDING' || invitation.expiresAt < new Date()) {
+    if (error || !inviteData) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-                <XCircle className="w-16 h-16 text-red-500 mb-4" />
-                <h1 className="text-2xl font-bold mb-2">Invitación inválida o expirada</h1>
-                <p>Esta invitación ya no está disponible.</p>
+            <div className="flex h-screen flex-col items-center justify-center bg-[#313131] text-white gap-4">
+                <XCircle className="h-12 w-12 text-red-500" />
+                <h1 className="text-xl font-bold">Invitación Inválida</h1>
+                <p className="text-gray-400">{error || "No se pudo encontrar la invitación."}</p>
             </div>
         );
-    }
-
-    // In a real app, here you would show a form to set password
-    // For now, we will just mark as ACCEPTED and creating a dummy user (or redirecting to register)
-
-    // Simulation of acceptance:
-    try {
-        await prisma.invitation.update({
-            where: { id: invitation.id },
-            data: { status: 'ACCEPTED' }
-        });
-        // Optionally create User record here
-    } catch (e) {
-        console.error(e);
-        return <div>Error processing</div>
     }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
-            <div className="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full text-center">
-                <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                <h1 className="text-2xl font-bold mb-2 font-display">¡Bienvenido, {invitation.name}!</h1>
-                <p className="text-gray-600 mb-6">Has aceptado la invitación al Ministerio Conexión exitosamente.</p>
+        <div className="flex min-h-screen flex-col items-center justify-center bg-[#313131] px-4">
+            <div className="w-full max-w-md space-y-6 rounded-2xl bg-white p-8 shadow-xl">
+                <div className="text-center">
+                    <CheckCircle className="mx-auto h-12 w-12 text-green-500 mb-4" />
+                    <h1 className="text-2xl font-bold font-display text-[#313131]">¡Hola, {inviteData.name}!</h1>
+                    <p className="text-gray-500 text-sm mt-2">Configura tu contraseña para unirte al equipo.</p>
+                </div>
 
-                <Link href="/calendar" className="block w-full py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors">
-                    Ir al Calendario
-                </Link>
+                <form onSubmit={handleRegister} className="space-y-4">
+                    <div className="space-y-2">
+                        <Label className="text-gray-700">Correo (Verificado)</Label>
+                        <Input value={inviteData.email} disabled className="bg-gray-100 cursor-not-allowed" />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="pass" className="text-gray-700">Nueva Contraseña</Label>
+                        <Input id="pass" type="password" required value={password} onChange={e => setPassword(e.target.value)} minLength={6} />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="confirm" className="text-gray-700">Confirmar Contraseña</Label>
+                        <Input id="confirm" type="password" required value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
+                    </div>
+
+                    {error && <p className="text-sm text-red-500 font-medium text-center">{error}</p>}
+
+                    <Button type="submit" disabled={loading} className="w-full bg-[#313131] hover:bg-black text-white">
+                        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Finalizar Registro
+                    </Button>
+                </form>
             </div>
         </div>
+    );
+}
+
+export default function AcceptInvitePage() {
+    return (
+        <Suspense fallback={<div className="flex h-screen items-center justify-center bg-[#313131] text-white"><Loader2 className="animate-spin h-8 w-8" /></div>}>
+            <RegisterForm />
+        </Suspense>
     );
 }

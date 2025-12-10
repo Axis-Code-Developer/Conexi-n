@@ -5,7 +5,6 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Calendar, Users, Activity, Package } from "lucide-react";
-import logo from "@/assets/logo.png";
 
 const navItems = [
     { name: "Calendario", href: "/calendar", icon: Calendar },
@@ -22,7 +21,7 @@ export function Navbar() {
             {/* Logo */}
             <div className="relative shrink-0 w-[46px] h-[46px] rounded-lg border-[0.6px] border-white shadow-md overflow-hidden bg-white">
                 <Image
-                    src={logo}
+                    src="/images/logo.png"
                     alt="Ministry Logo"
                     fill
                     className="object-cover"

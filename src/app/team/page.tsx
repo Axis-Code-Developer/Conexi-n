@@ -11,14 +11,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
-// Mock data
-const members = [
-    { id: 1, name: "Carlos Ruiz", role: "Líder", activities: "Alabanza, Jóvenes" },
-    { id: 2, name: "Ana López", role: "Miembro", activities: "Ujieres" },
-    { id: 3, name: "Pedro Martinez", role: "Miembro", activities: "Sonido" },
-];
+import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic";
 
-export default function TeamPage() {
+export default async function TeamPage() {
+    const members = await prisma.user.findMany({
+        orderBy: { name: 'asc' }
+    });
+
     return (
         <div className="flex flex-col gap-6">
             {/* Header with Action */}
@@ -37,12 +37,18 @@ export default function TeamPage() {
                     {/* Headers (Optional, but good for UX - making them subtle) */}
                     <div className="grid grid-cols-12 px-6 py-3 text-sm font-medium text-gray-500">
                         <div className="col-span-4">Perfil / Nombre</div>
-                        <div className="col-span-6">Actividades</div>
+                        <div className="col-span-6">Correo</div>
                         <div className="col-span-2 text-right">Opciones</div>
                     </div>
 
+                    {members.length === 0 && (
+                        <div className="p-8 text-center text-gray-500 bg-[#313131] rounded-2xl">
+                            No hay miembros aún. Invita a alguien.
+                        </div>
+                    )}
+
                     {/* Rows */}
-                    {members.map((member, index) => {
+                    {members.map((member: any, index: number) => {
                         const isFirst = index === 0;
                         const isLast = index === members.length - 1;
 
@@ -70,9 +76,9 @@ export default function TeamPage() {
                                     </div>
                                 </div>
 
-                                {/* Col 2: Activities */}
+                                {/* Col 2: Email (Replacing Activities for now) */}
                                 <div className="col-span-6 text-sm text-gray-300">
-                                    {member.activities}
+                                    {member.email}
                                 </div>
 
                                 {/* Col 3: Options */}

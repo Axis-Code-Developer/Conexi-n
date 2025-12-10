@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { inter, urbanist } from "@/assets/fonts";
+import { inter, urbanist } from "@/app/fonts";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 
