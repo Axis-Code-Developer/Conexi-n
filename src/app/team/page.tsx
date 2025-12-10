@@ -15,7 +15,7 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function TeamPage() {
-    let members = [];
+    let members: any[] = [];
     try {
         members = await prisma.user.findMany({
             orderBy: { name: 'asc' }
