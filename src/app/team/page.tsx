@@ -15,9 +15,16 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function TeamPage() {
-    const members = await prisma.user.findMany({
-        orderBy: { name: 'asc' }
-    });
+    let members = [];
+    try {
+        members = await prisma.user.findMany({
+            orderBy: { name: 'asc' }
+        });
+    } catch (e) {
+        console.warn("Could not fetch members during render (likely build time or DB unreachable):", e);
+        // Default to empty array to allow build to pass
+        members = [];
+    }
 
     return (
         <div className="flex flex-col gap-6">
