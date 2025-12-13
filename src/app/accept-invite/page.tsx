@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, Eye, EyeOff } from "lucide-react";
 
 function RegisterForm() {
     const router = useRouter();
@@ -18,6 +18,8 @@ function RegisterForm() {
     const [error, setError] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     useEffect(() => {
         if (!token) {
@@ -25,12 +27,6 @@ function RegisterForm() {
             setError("Token no proporcionado");
             return;
         }
-
-        // Verify token validity via API (need a new endpoint or check existing invite status)
-        // For now, implementing client-side 'verify' by calling a GET endpoint we should create
-        // Or simpler: Just assume pending until we submit form which will fail if invalid.
-        // BUT user wants to see their email. 
-        // Let's create a small server action or API route to get invite details by token.
 
         fetch(`/api/invite/verify?token=${token}`)
             .then(res => res.json())
@@ -79,12 +75,12 @@ function RegisterForm() {
     };
 
     if (verifying) {
-        return <div className="flex h-screen items-center justify-center bg-[#313131] text-white"><Loader2 className="animate-spin h-8 w-8" /></div>;
+        return <div className="flex h-screen items-center justify-center bg-[#1A1A1A] text-white"><Loader2 className="animate-spin h-8 w-8" /></div>;
     }
 
-    if (error || !inviteData) {
+    if (error && !inviteData) {
         return (
-            <div className="flex h-screen flex-col items-center justify-center bg-[#313131] text-white gap-4">
+            <div className="flex h-screen flex-col items-center justify-center bg-[#1A1A1A] text-white gap-4">
                 <XCircle className="h-12 w-12 text-red-500" />
                 <h1 className="text-xl font-bold">Invitación Inválida</h1>
                 <p className="text-gray-400">{error || "No se pudo encontrar la invitación."}</p>
@@ -92,34 +88,79 @@ function RegisterForm() {
         );
     }
 
+    if (!inviteData) {
+        return null;
+    }
+
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-[#313131] px-4">
-            <div className="w-full max-w-md space-y-6 rounded-2xl bg-white p-8 shadow-xl">
-                <div className="text-center">
-                    <CheckCircle className="mx-auto h-12 w-12 text-green-500 mb-4" />
-                    <h1 className="text-2xl font-bold font-display text-[#313131]">¡Hola, {inviteData.name}!</h1>
-                    <p className="text-gray-500 text-sm mt-2">Configura tu contraseña para unirte al equipo.</p>
+        <div className="flex min-h-screen flex-col items-center justify-center bg-[#1A1A1A]">
+            <div className="w-full max-w-md space-y-8 rounded-lg bg-[#171717] p-8 shadow-2xl border-[0.6px] border-white/20">
+                <div className="text-center space-y-2">
+                    <div className="mx-auto mb-4 w-[60px] h-[60px] relative">
+                        <img
+                            src="/images/logo.png"
+                            alt="Ministry Logo"
+                            className="w-full h-full object-cover rounded-lg border-[0.6px] border-white shadow-md"
+                        />
+                    </div>
+                    <h1 className="text-3xl font-display font-bold text-white tracking-tight">¡Hola, {inviteData.name}!</h1>
+                    <p className="text-gray-400 text-base">Configura tu contraseña para unirte al equipo.</p>
                 </div>
 
-                <form onSubmit={handleRegister} className="space-y-4">
+                <form onSubmit={handleRegister} className="space-y-5">
                     <div className="space-y-2">
-                        <Label className="text-gray-700">Correo (Verificado)</Label>
-                        <Input value={inviteData.email} disabled className="bg-gray-100 cursor-not-allowed" />
+                        <Label className="text-gray-300 font-normal ml-1">Correo (Verificado)</Label>
+                        <Input value={inviteData.email} disabled className="bg-[#252525] border-white/10 text-gray-400 cursor-not-allowed" />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="pass" className="text-gray-700">Nueva Contraseña</Label>
-                        <Input id="pass" type="password" required value={password} onChange={e => setPassword(e.target.value)} minLength={6} />
+                        <Label htmlFor="pass" className="text-gray-300 font-normal ml-1">Nueva Contraseña</Label>
+                        <div className="relative">
+                            <Input
+                                id="pass"
+                                type={showPassword ? "text" : "password"}
+                                required
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                                minLength={6}
+                                placeholder="••••••••"
+                                className="pr-10"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                            >
+                                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                        </div>
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="confirm" className="text-gray-700">Confirmar Contraseña</Label>
-                        <Input id="confirm" type="password" required value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
+                        <Label htmlFor="confirm" className="text-gray-300 font-normal ml-1">Confirmar Contraseña</Label>
+                        <div className="relative">
+                            <Input
+                                id="confirm"
+                                type={showConfirmPassword ? "text" : "password"}
+                                required
+                                value={confirmPassword}
+                                onChange={e => setConfirmPassword(e.target.value)}
+                                placeholder="••••••••"
+                                className="pr-10"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                            >
+                                {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                        </div>
                     </div>
 
-                    {error && <p className="text-sm text-red-500 font-medium text-center">{error}</p>}
+                    {error && <p className="text-sm text-red-400 font-medium text-center bg-red-900/20 py-2 rounded-md">{error}</p>}
 
-                    <Button type="submit" disabled={loading} className="w-full bg-[#313131] hover:bg-black text-white">
+                    <Button type="submit" disabled={loading} className="w-full bg-white text-black hover:bg-gray-200 font-semibold rounded-lg h-10 transition-all shadow-lg hover:shadow-white/10">
                         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Finalizar Registro
                     </Button>
@@ -131,7 +172,7 @@ function RegisterForm() {
 
 export default function AcceptInvitePage() {
     return (
-        <Suspense fallback={<div className="flex h-screen items-center justify-center bg-[#313131] text-white"><Loader2 className="animate-spin h-8 w-8" /></div>}>
+        <Suspense fallback={<div className="flex h-screen items-center justify-center bg-[#1A1A1A] text-white"><Loader2 className="animate-spin h-8 w-8" /></div>}>
             <RegisterForm />
         </Suspense>
     );

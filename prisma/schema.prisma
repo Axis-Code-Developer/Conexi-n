@@ -11,11 +11,23 @@ model User {
   id             String    @id @default(cuid())
   email          String    @unique
   name           String
+  image          String?
   password       String
   role           Role      @default(MEMBER)
+  isStaff        Boolean   @default(false)
   ministryId     String?
   ministry       Ministry? @relation(fields: [ministryId], references: [id])
+  
+  // Supervisor is a simple string (name from SUPERVISORS list), not a relation
+  supervisorName String?
+  
+  // Staff identity is a simple string (name from STAFF_MEMBERS list) for conflict checking
+  staffName      String?
+  
+  supervisedEvents Event[] @relation("EventSupervisor")
   assignments    Assignment[]
+  activities     Activity[]
+  updates        ActivityUpdate[]
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 }
@@ -37,8 +49,17 @@ model Event {
   startTime   DateTime?
   endTime     DateTime?
   type        EventType    @default(GENERAL)
+  
   ministryId  String?
   ministry    Ministry?    @relation(fields: [ministryId], references: [id])
+  
+  supervisorId String?
+  supervisor   User?       @relation("EventSupervisor", fields: [supervisorId], references: [id])
+  
+  staffName    String?
+  supervisorName String?
+
+  
   assignments Assignment[]
   tags        Tag[]
   createdAt   DateTime     @default(now())
@@ -82,9 +103,15 @@ enum Role {
 
 enum EventType {
   GENERAL
-  SERVICE
-  PRACTICE
-  SPECIAL
+  CHURCH_MEETING_VISTA_AL_MAR
+  CHURCH_MEETING_CENTRO
+  GROUPS
+  GENERAL_GROUP_MEETING
+  SPECIAL_EVENT
+  ONE_EIGHTY
+  DISCIPLESHIP
+  SMILES
+  NO_MEETING
 }
 
 model Invitation {
@@ -102,4 +129,78 @@ enum InvitationStatus {
   PENDING
   ACCEPTED
   EXPIRED
+}
+
+model Activity {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?  @db.Text
+  icon          String   // Name of the lucide icon
+  color         String   // Hex color or Tailwind class
+  
+  responsibleId String
+  responsible   User     @relation(fields: [responsibleId], references: [id])
+  status        ActivityStatus @default(PENDING)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  updates       ActivityUpdate[]
+}
+
+model ActivityUpdate {
+  id          String   @id @default(cuid())
+  title       String   @default("") // Added title field
+  content     String   @db.Text
+  createdAt   DateTime @default(now())
+  
+  activityId  String
+  activity    Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+}
+
+enum ActivityStatus {
+  PENDING
+  CANCELLED
+}
+
+// Resource Model
+model Resource {
+  id          String   @id @default(cuid())
+  title       String
+  description String?  @db.Text
+  category    String
+  type        String
+  fileUrl     String?  // URL for uploaded files or external links
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// FollowUp Model (Personas en seguimiento)
+model FollowUp {
+  id              String   @id @default(cuid())
+  evangelizer     String   // Quién atendió
+  date            DateTime // Fecha de contacto
+  fullName        String   // Nombre de la persona
+  whatsapp        String   // Contacto
+  email           String?  // Opcional
+  acceptedJesus   String   // "Sí", "No", "Ya era creyente"
+  reason          String   // Motivo de visita
+  agreedToFollowUp String // "Sí", "No"
+  observations    String?
+  status          String   @default("PENDING") // PENDING, CONTACTED, VISITED, ARCHIVED
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Calendar Agent Files
+model CalendarFile {
+  id        String   @id @default(cuid())
+  fileName  String
+  fileSize  Int      // in bytes
+  content   String?  @db.Text // Text content extracted if applicable
+  uploadedBy String
+  createdAt DateTime @default(now())
 }

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { inter, urbanist } from "@/app/fonts";
+import { inter, urbanist, outfit } from "@/app/fonts";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
+import { Providers } from "@/components/providers/Providers";
 
 export const metadata: Metadata = {
   title: "Ministry Organizer",
@@ -14,12 +15,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${inter.variable} ${urbanist.variable}`}>
-      <body className="antialiased min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-1 p-8">
-          {children}
-        </main>
+    <html lang="es" className={`${inter.variable} ${urbanist.variable} ${outfit.variable}`}>
+      <body className="antialiased min-h-screen flex flex-col bg-[#1A1A1A]" suppressHydrationWarning>
+        <Providers>
+          <Navbar />
+          <main className="flex-1">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );

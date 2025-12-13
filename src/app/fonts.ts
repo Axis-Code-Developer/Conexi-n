@@ -1,4 +1,4 @@
-import { Inter, Urbanist } from 'next/font/google'
+import { Inter, Urbanist, Outfit } from 'next/font/google'
 
 export const inter = Inter({
     subsets: ['latin'],
@@ -10,4 +10,10 @@ export const urbanist = Urbanist({
     subsets: ['latin'],
     display: 'swap',
     variable: '--font-urbanist',
+})
+
+export const outfit = Outfit({
+    subsets: ['latin'],
+    display: 'swap',
+    variable: '--font-outfit',
 })
