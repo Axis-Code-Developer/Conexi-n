@@ -26,24 +26,6 @@ body {
   font-family: var(--font-sans), sans-serif;
 }
 
-@utility custom-scrollbar {
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply bg-gray-200 rounded-full;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-300;
-  }
-}
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

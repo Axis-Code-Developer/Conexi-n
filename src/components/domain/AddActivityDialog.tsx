@@ -1,5 +1,6 @@
 "use client";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from "react";
 import {
     Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger
@@ -110,146 +111,148 @@ export function AddActivityDialog({ users, currentUser }: AddActivityDialogProps
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="grid gap-6">
-                    {/* Icon & Name Row */}
-                    <div className="flex gap-4">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <div className="flex flex-col items-center gap-2 cursor-pointer group">
-                                    <button className={cn(
-                                        "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform active:scale-95 border-2",
-                                        selectedColor
-                                            ? cn(selectedColor, "border-transparent text-white shadow-lg")
-                                            : "bg-[#252525] border-white/20 text-gray-400 hover:border-white/50 hover:text-white"
-                                    )}>
-                                        {selectedIcon && SelectedIconComp ? (
-                                            <SelectedIconComp className="w-6 h-6" />
-                                        ) : (
-                                            <span className="text-2xl font-light">+</span>
-                                        )}
-                                    </button>
-                                    <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">
-                                        {selectedIcon ? "Cambiar" : "Añadir ícono"}
-                                    </span>
-                                </div>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-[320px] bg-[#252525] border-white/10 p-4" align="start">
-                                <div className="space-y-4">
-                                    {/* Color Grid */}
-                                    <div>
-                                        <Label className="text-xs text-gray-400 mb-2 block">Color</Label>
-                                        <div className="grid grid-cols-9 gap-2">
-                                            {COLORS.map(color => (
-                                                <button
-                                                    key={color}
-                                                    onClick={() => setSelectedColor(color)}
-                                                    className={cn(
-                                                        "w-6 h-6 rounded-full transition-transform hover:scale-110 border border-transparent",
-                                                        color,
-                                                        selectedColor === color && "ring-2 ring-white ring-offset-2 ring-offset-[#252525]"
-                                                    )}
-                                                />
-                                            ))}
-                                        </div>
+                <ScrollArea className="max-h-[60vh] -mr-4 pr-4">
+                    <div className="grid gap-6 pr-2">
+                        {/* Icon & Name Row */}
+                        <div className="flex gap-4">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <div className="flex flex-col items-center gap-2 cursor-pointer group">
+                                        <button className={cn(
+                                            "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform active:scale-95 border-2",
+                                            selectedColor
+                                                ? cn(selectedColor, "border-transparent text-white shadow-lg")
+                                                : "bg-[#252525] border-white/20 text-gray-400 hover:border-white/50 hover:text-white"
+                                        )}>
+                                            {selectedIcon && SelectedIconComp ? (
+                                                <SelectedIconComp className="w-6 h-6" />
+                                            ) : (
+                                                <span className="text-2xl font-light">+</span>
+                                            )}
+                                        </button>
+                                        <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors">
+                                            {selectedIcon ? "Cambiar" : "Añadir ícono"}
+                                        </span>
                                     </div>
-
-                                    {/* Icon Grid */}
-                                    <div>
-                                        <Label className="text-xs text-gray-400 mb-2 block">Ícono</Label>
-                                        <div className="grid grid-cols-6 gap-2 max-h-[200px] overflow-y-auto custom-scrollbar p-1">
-                                            {Object.keys(ICONS).map(iconName => {
-                                                const Icon = (ICONS as any)[iconName];
-                                                return (
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-[320px] bg-[#252525] border-white/10 p-4" align="start">
+                                    <div className="space-y-4">
+                                        {/* Color Grid */}
+                                        <div>
+                                            <Label className="text-xs text-gray-400 mb-2 block">Color</Label>
+                                            <div className="grid grid-cols-9 gap-2">
+                                                {COLORS.map(color => (
                                                     <button
-                                                        key={iconName}
-                                                        onClick={() => setSelectedIcon(iconName)}
+                                                        key={color}
+                                                        onClick={() => setSelectedColor(color)}
                                                         className={cn(
-                                                            "w-9 h-9 rounded-lg flex items-center justify-center transition-colors border border-transparent",
-                                                            selectedIcon === iconName
-                                                                ? "bg-white/10 border-white/20 text-white"
-                                                                : "text-gray-400 hover:bg-white/5 hover:text-white"
+                                                            "w-6 h-6 rounded-full transition-transform hover:scale-110 border border-transparent",
+                                                            color,
+                                                            selectedColor === color && "ring-2 ring-white ring-offset-2 ring-offset-[#252525]"
                                                         )}
-                                                    >
-                                                        <Icon className="w-5 h-5" />
-                                                    </button>
-                                                );
-                                            })}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Icon Grid */}
+                                        <div>
+                                            <Label className="text-xs text-gray-400 mb-2 block">Ícono</Label>
+                                            <div className="grid grid-cols-6 gap-2 max-h-[200px] overflow-y-auto custom-scrollbar p-1">
+                                                {Object.keys(ICONS).map(iconName => {
+                                                    const Icon = (ICONS as any)[iconName];
+                                                    return (
+                                                        <button
+                                                            key={iconName}
+                                                            onClick={() => setSelectedIcon(iconName)}
+                                                            className={cn(
+                                                                "w-9 h-9 rounded-lg flex items-center justify-center transition-colors border border-transparent",
+                                                                selectedIcon === iconName
+                                                                    ? "bg-white/10 border-white/20 text-white"
+                                                                    : "text-gray-400 hover:bg-white/5 hover:text-white"
+                                                            )}
+                                                        >
+                                                            <Icon className="w-5 h-5" />
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
 
-                        <div className="flex-1 space-y-4">
+                            <div className="flex-1 space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="title" className="text-xs text-gray-400">Nombre de la actividad</Label>
+                                    <Input
+                                        id="title"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        placeholder="Nombre de la actividad"
+                                        className="bg-[#252525] border-white/10 text-white focus:border-amber-500/50"
+                                    />
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        {/* Description */}
+                        <div className="space-y-2">
+                            <Label htmlFor="desc" className="text-xs text-gray-400">Descripción</Label>
+                            <RichTextEditor
+                                value={description}
+                                onChange={setDescription}
+                                placeholder="Describe las responsabilidades..."
+                                className="focus-within:border-amber-500/50"
+                            />
+                        </div>
+
+                        {/* Responsible & Status Row */}
+                        <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label htmlFor="title" className="text-xs text-gray-400">Nombre de la actividad</Label>
-                                <Input
-                                    id="title"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder="Nombre de la actividad"
-                                    className="bg-[#252525] border-white/10 text-white focus:border-amber-500/50"
-                                />
+                                <Label className="text-xs text-gray-400">Responsable</Label>
+                                <Select value={responsibleId} onValueChange={setResponsibleId}>
+                                    <SelectTrigger className="bg-[#252525] border-white/10 text-white h-10">
+                                        <SelectValue placeholder="Seleccionar" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-[#252525] border-white/10 text-white max-h-[200px]">
+                                        {users.map(user => (
+                                            <SelectItem key={user.id} value={user.id} className="focus:bg-white/10 focus:text-white">
+                                                <div className="flex items-center gap-2">
+                                                    <Avatar className="w-5 h-5">
+                                                        <AvatarImage src={user.image} />
+                                                        <AvatarFallback className="text-[9px] bg-gray-600">
+                                                            {user.name.substring(0, 2).toUpperCase()}
+                                                        </AvatarFallback>
+                                                    </Avatar>
+                                                    <span className="truncate max-w-[120px]">{user.name}</span>
+                                                </div>
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
 
-
+                            <div className="space-y-2">
+                                <Label className="text-xs text-gray-400">Estado inicial</Label>
+                                <Select value={status} onValueChange={setStatus}>
+                                    <SelectTrigger className="bg-[#252525] border-white/10 text-white h-10">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-[#252525] border-white/10 text-white">
+                                        {STATUS_OPTS.map(opt => (
+                                            <SelectItem key={opt.value} value={opt.value} className="focus:bg-white/10 focus:text-white">
+                                                <span className={opt.color}>{opt.label}</span>
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                     </div>
-
-                    {/* Description */}
-                    <div className="space-y-2">
-                        <Label htmlFor="desc" className="text-xs text-gray-400">Descripción</Label>
-                        <RichTextEditor
-                            value={description}
-                            onChange={setDescription}
-                            placeholder="Describe las responsabilidades..."
-                            className="focus-within:border-amber-500/50"
-                        />
-                    </div>
-
-                    {/* Responsible & Status Row */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label className="text-xs text-gray-400">Responsable</Label>
-                            <Select value={responsibleId} onValueChange={setResponsibleId}>
-                                <SelectTrigger className="bg-[#252525] border-white/10 text-white h-10">
-                                    <SelectValue placeholder="Seleccionar" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-[#252525] border-white/10 text-white max-h-[200px]">
-                                    {users.map(user => (
-                                        <SelectItem key={user.id} value={user.id} className="focus:bg-white/10 focus:text-white">
-                                            <div className="flex items-center gap-2">
-                                                <Avatar className="w-5 h-5">
-                                                    <AvatarImage src={user.image} />
-                                                    <AvatarFallback className="text-[9px] bg-gray-600">
-                                                        {user.name.substring(0, 2).toUpperCase()}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <span className="truncate max-w-[120px]">{user.name}</span>
-                                            </div>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label className="text-xs text-gray-400">Estado inicial</Label>
-                            <Select value={status} onValueChange={setStatus}>
-                                <SelectTrigger className="bg-[#252525] border-white/10 text-white h-10">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-[#252525] border-white/10 text-white">
-                                    {STATUS_OPTS.map(opt => (
-                                        <SelectItem key={opt.value} value={opt.value} className="focus:bg-white/10 focus:text-white">
-                                            <span className={opt.color}>{opt.label}</span>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                </div>
+                </ScrollArea>
 
                 <DialogFooter className="mt-4">
                     <Button variant="ghost" onClick={() => setOpen(false)} className="text-gray-400 hover:text-white hover:bg-white/5">

@@ -1,5 +1,6 @@
 "use client";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState, useEffect } from "react";
 import {
     Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription
@@ -238,165 +239,167 @@ export function AddFollowUpDialog() {
                 </div>
 
                 {/* Content - CENTERED */}
-                <div className="px-6 py-10 min-h-[400px] flex items-center justify-center">
-                    <div className="w-full max-w-md mx-auto">
+                <ScrollArea className="max-h-[65vh] w-full">
+                    <div className="px-6 py-10 min-h-[400px] flex items-center justify-center">
+                        <div className="w-full max-w-md mx-auto">
 
-                        {/* Step 1: Bienvenida */}
-                        {currentStep === 1 && (
-                            <div className="flex flex-col items-center text-center space-y-6 animate-in fade-in duration-300">
-                                {/* Avatar */}
-                                <Avatar className="w-20 h-20 border-2 border-white/20">
-                                    {user?.image ? (
-                                        <AvatarImage src={user.image} />
-                                    ) : null}
-                                    <AvatarFallback className="bg-[#313131] text-white text-2xl">
-                                        {user?.name?.[0]?.toUpperCase() || "?"}
-                                    </AvatarFallback>
-                                </Avatar>
+                            {/* Step 1: Bienvenida */}
+                            {currentStep === 1 && (
+                                <div className="flex flex-col items-center text-center space-y-6 animate-in fade-in duration-300">
+                                    {/* Avatar */}
+                                    <Avatar className="w-20 h-20 border-2 border-white/20">
+                                        {user?.image ? (
+                                            <AvatarImage src={user.image} />
+                                        ) : null}
+                                        <AvatarFallback className="bg-[#313131] text-white text-2xl">
+                                            {user?.name?.[0]?.toUpperCase() || "?"}
+                                        </AvatarFallback>
+                                    </Avatar>
 
-                                {/* User name */}
-                                <div className="space-y-1">
-                                    <h3 className="text-2xl font-bold text-white mb-1">
-                                        {user?.name || "Cargando..."}
-                                    </h3>
-                                    <p className="text-sm text-gray-400">
-                                        {formattedDate} <span className="text-gray-600 mx-1">|</span> {formattedTime}
-                                    </p>
-                                </div>
-
-                                {/* Encouraging message */}
-                                <div className="space-y-4 pt-4">
-                                    <p className="text-lg text-white">
-                                        ¡Gracias por servir con amor y respeto! 🤗
-                                    </p>
-                                    <p className="text-sm text-gray-400 leading-relaxed">
-                                        Recuerda que cada alma tiene su eternidad.
-                                    </p>
-                                    <blockquote className="text-sm text-gray-500 italic leading-relaxed border-l-2 border-white/20 pl-4 text-center">
-                                        "Pero Dios, que es rico en misericordia, por su gran amor con que nos amó, aun estando nosotros muertos en pecados, nos dio vida juntamente con Cristo (por gracia sois salvos),"
-                                        <footer className="text-gray-600 not-italic mt-2">— Efesios 2:4-5</footer>
-                                    </blockquote>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Step 2: Datos de Contacto */}
-                        {currentStep === 2 && (
-                            <div className="space-y-6 animate-in fade-in duration-300">
-                                <div className="text-center mb-8">
-                                    <h3 className="text-xl font-bold text-white mb-2">¿A quién conociste?</h3>
-                                    <p className="text-sm text-gray-400">Ingresa los datos de contacto de la persona</p>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="fullName" className="text-xs text-gray-400">Nombre completo</Label>
-                                        <Input
-                                            id="fullName"
-                                            value={formData.fullName}
-                                            onChange={(e) => handleInputChange("fullName", e.target.value)}
-                                            placeholder="Nombre y apellidos"
-                                            className="bg-[#252525] border-white/10 text-white focus:border-white/20 text-center h-12"
-                                        />
+                                    {/* User name */}
+                                    <div className="space-y-1">
+                                        <h3 className="text-2xl font-bold text-white mb-1">
+                                            {user?.name || "Cargando..."}
+                                        </h3>
+                                        <p className="text-sm text-gray-400">
+                                            {formattedDate} <span className="text-gray-600 mx-1">|</span> {formattedTime}
+                                        </p>
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="whatsapp" className="text-xs text-gray-400">WhatsApp / Teléfono</Label>
-                                        <Input
-                                            id="whatsapp"
-                                            value={formData.whatsapp}
-                                            onChange={handlePhoneChange}
-                                            placeholder="+504 1234-5678"
-                                            className="bg-[#252525] border-white/10 text-white focus:border-white/20 text-center h-12"
-                                            maxLength={14} // +504 (5) + 8 digits + 1 dash = 14 chars
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="email" className="text-xs text-gray-400">Correo electrónico (opcional)</Label>
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            value={formData.email}
-                                            onChange={(e) => handleInputChange("email", e.target.value)}
-                                            placeholder="correo@ejemplo.com"
-                                            className="bg-[#252525] border-white/10 text-white focus:border-white/20 text-center h-12"
-                                        />
+
+                                    {/* Encouraging message */}
+                                    <div className="space-y-4 pt-4">
+                                        <p className="text-lg text-white">
+                                            ¡Gracias por servir con amor y respeto! 🤗
+                                        </p>
+                                        <p className="text-sm text-gray-400 leading-relaxed">
+                                            Recuerda que cada alma tiene su eternidad.
+                                        </p>
+                                        <blockquote className="text-sm text-gray-500 italic leading-relaxed border-l-2 border-white/20 pl-4 text-center">
+                                            "Pero Dios, que es rico en misericordia, por su gran amor con que nos amó, aun estando nosotros muertos en pecados, nos dio vida juntamente con Cristo (por gracia sois salvos),"
+                                            <footer className="text-gray-600 not-italic mt-2">— Efesios 2:4-5</footer>
+                                        </blockquote>
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                        {/* Step 3: Decisión Espiritual */}
-                        {currentStep === 3 && (
-                            <div className="space-y-6 animate-in fade-in duration-300">
-                                <div className="text-center mb-8">
-                                    <h3 className="text-xl font-bold text-white mb-2">Decisión espiritual</h3>
-                                    <p className="text-sm text-gray-400">¿Qué sucedió en este encuentro?</p>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="space-y-2">
-                                        <Label className="text-xs text-gray-400">¿Aceptó a Jesús como su salvador?</Label>
-                                        <Select value={formData.acceptedJesus} onValueChange={(v) => handleInputChange("acceptedJesus", v)}>
-                                            <SelectTrigger className="bg-[#252525] border-white/10 text-white h-12 text-center justify-center">
-                                                <SelectValue placeholder="Seleccionar respuesta" />
-                                            </SelectTrigger>
-                                            <SelectContent className="bg-[#252525] border-white/10 text-white">
-                                                <SelectItem value="Sí" className="focus:bg-white/10 focus:text-white justify-center">Sí, aceptó a Jesús 🙏</SelectItem>
-                                                <SelectItem value="No" className="focus:bg-white/10 focus:text-white justify-center">No, aún no</SelectItem>
-                                                <SelectItem value="Ya era creyente" className="focus:bg-white/10 focus:text-white justify-center">Ya era creyente</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                            {/* Step 2: Datos de Contacto */}
+                            {currentStep === 2 && (
+                                <div className="space-y-6 animate-in fade-in duration-300">
+                                    <div className="text-center mb-8">
+                                        <h3 className="text-xl font-bold text-white mb-2">¿A quién conociste?</h3>
+                                        <p className="text-sm text-gray-400">Ingresa los datos de contacto de la persona</p>
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="reason" className="text-xs text-gray-400">Motivo de acercamiento</Label>
-                                        <textarea
-                                            id="reason"
-                                            value={formData.reason}
-                                            onChange={(e) => handleInputChange("reason", e.target.value)}
-                                            placeholder="Oración, consejería, invitación..."
-                                            className="w-full bg-[#252525] border border-white/10 text-white focus:border-white/20 rounded-md p-3 min-h-[100px] resize-none text-sm text-center"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
 
-                        {/* Step 4: Seguimiento */}
-                        {currentStep === 4 && (
-                            <div className="space-y-6 animate-in fade-in duration-300">
-                                <div className="text-center mb-8">
-                                    <h3 className="text-xl font-bold text-white mb-2">Seguimiento</h3>
-                                    <p className="text-sm text-gray-400">Detalles finales del registro</p>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="space-y-2">
-                                        <Label className="text-xs text-gray-400">¿Está de acuerdo con recibir seguimiento?</Label>
-                                        <Select value={formData.agreedToFollowUp} onValueChange={(v) => handleInputChange("agreedToFollowUp", v)}>
-                                            <SelectTrigger className="bg-[#252525] border-white/10 text-white h-12 text-center justify-center">
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent className="bg-[#252525] border-white/10 text-white">
-                                                <SelectItem value="Sí" className="focus:bg-white/10 focus:text-white justify-center">Sí, acepta seguimiento ✅</SelectItem>
-                                                <SelectItem value="No" className="focus:bg-white/10 focus:text-white justify-center">No, prefiere no ser contactado</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="observations" className="text-xs text-gray-400">Observaciones (opcional)</Label>
-                                        <textarea
-                                            id="observations"
-                                            value={formData.observations}
-                                            onChange={(e) => handleInputChange("observations", e.target.value)}
-                                            placeholder="Notas adicionales sobre la persona..."
-                                            className="w-full bg-[#252525] border border-white/10 text-white focus:border-white/20 rounded-md p-3 min-h-[100px] resize-none text-sm"
-                                        />
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="fullName" className="text-xs text-gray-400">Nombre completo</Label>
+                                            <Input
+                                                id="fullName"
+                                                value={formData.fullName}
+                                                onChange={(e) => handleInputChange("fullName", e.target.value)}
+                                                placeholder="Nombre y apellidos"
+                                                className="bg-[#252525] border-white/10 text-white focus:border-white/20 text-center h-12"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="whatsapp" className="text-xs text-gray-400">WhatsApp / Teléfono</Label>
+                                            <Input
+                                                id="whatsapp"
+                                                value={formData.whatsapp}
+                                                onChange={handlePhoneChange}
+                                                placeholder="+504 1234-5678"
+                                                className="bg-[#252525] border-white/10 text-white focus:border-white/20 text-center h-12"
+                                                maxLength={14} // +504 (5) + 8 digits + 1 dash = 14 chars
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="email" className="text-xs text-gray-400">Correo electrónico (opcional)</Label>
+                                            <Input
+                                                id="email"
+                                                type="email"
+                                                value={formData.email}
+                                                onChange={(e) => handleInputChange("email", e.target.value)}
+                                                placeholder="correo@ejemplo.com"
+                                                className="bg-[#252525] border-white/10 text-white focus:border-white/20 text-center h-12"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
+
+                            {/* Step 3: Decisión Espiritual */}
+                            {currentStep === 3 && (
+                                <div className="space-y-6 animate-in fade-in duration-300">
+                                    <div className="text-center mb-8">
+                                        <h3 className="text-xl font-bold text-white mb-2">Decisión espiritual</h3>
+                                        <p className="text-sm text-gray-400">¿Qué sucedió en este encuentro?</p>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <Label className="text-xs text-gray-400">¿Aceptó a Jesús como su salvador?</Label>
+                                            <Select value={formData.acceptedJesus} onValueChange={(v) => handleInputChange("acceptedJesus", v)}>
+                                                <SelectTrigger className="bg-[#252525] border-white/10 text-white h-12 text-center justify-center">
+                                                    <SelectValue placeholder="Seleccionar respuesta" />
+                                                </SelectTrigger>
+                                                <SelectContent className="bg-[#252525] border-white/10 text-white">
+                                                    <SelectItem value="Sí" className="focus:bg-white/10 focus:text-white justify-center">Sí, aceptó a Jesús 🙏</SelectItem>
+                                                    <SelectItem value="No" className="focus:bg-white/10 focus:text-white justify-center">No, aún no</SelectItem>
+                                                    <SelectItem value="Ya era creyente" className="focus:bg-white/10 focus:text-white justify-center">Ya era creyente</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="reason" className="text-xs text-gray-400">Motivo de acercamiento</Label>
+                                            <textarea
+                                                id="reason"
+                                                value={formData.reason}
+                                                onChange={(e) => handleInputChange("reason", e.target.value)}
+                                                placeholder="Oración, consejería, invitación..."
+                                                className="w-full bg-[#252525] border border-white/10 text-white focus:border-white/20 rounded-md p-3 min-h-[100px] resize-none text-sm text-center"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Step 4: Seguimiento */}
+                            {currentStep === 4 && (
+                                <div className="space-y-6 animate-in fade-in duration-300">
+                                    <div className="text-center mb-8">
+                                        <h3 className="text-xl font-bold text-white mb-2">Seguimiento</h3>
+                                        <p className="text-sm text-gray-400">Detalles finales del registro</p>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <Label className="text-xs text-gray-400">¿Está de acuerdo con recibir seguimiento?</Label>
+                                            <Select value={formData.agreedToFollowUp} onValueChange={(v) => handleInputChange("agreedToFollowUp", v)}>
+                                                <SelectTrigger className="bg-[#252525] border-white/10 text-white h-12 text-center justify-center">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent className="bg-[#252525] border-white/10 text-white">
+                                                    <SelectItem value="Sí" className="focus:bg-white/10 focus:text-white justify-center">Sí, acepta seguimiento ✅</SelectItem>
+                                                    <SelectItem value="No" className="focus:bg-white/10 focus:text-white justify-center">No, prefiere no ser contactado</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="observations" className="text-xs text-gray-400">Observaciones (opcional)</Label>
+                                            <textarea
+                                                id="observations"
+                                                value={formData.observations}
+                                                onChange={(e) => handleInputChange("observations", e.target.value)}
+                                                placeholder="Notas adicionales sobre la persona..."
+                                                className="w-full bg-[#252525] border border-white/10 text-white focus:border-white/20 rounded-md p-3 min-h-[100px] resize-none text-sm"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div>
+                </ScrollArea>
 
                 {/* Footer */}
                 <div className="px-6 py-4 border-t border-white/5">

@@ -4,7 +4,7 @@ export default function DashboardLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="p-8 bg-[#1A1A1A] min-h-screen">
+        <div className="px-8 pb-8 pt-32 bg-[#1A1A1A] min-h-screen">
             {children}
         </div>
     );

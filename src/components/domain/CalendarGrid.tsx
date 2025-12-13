@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
     format,
     startOfMonth,
@@ -441,7 +442,7 @@ export function CalendarGrid({ className }: CalendarGridProps) {
     );
 
     return (
-        <div className="bg-[#252525] rounded-2xl shadow-lg border-[0.6px] border-white/20 overflow-hidden h-full flex flex-col relative">
+        <div className="bg-[#252525] rounded-2xl shadow-lg border-[0.6px] border-white/20 relative">
             <div className="flex items-center justify-between p-4 border-b border-white/20 bg-[#2a2a2a]">
                 <h2 className="text-2xl font-display font-semibold text-white capitalize">
                     {format(currentMonth, "MMMM yyyy", { locale: es })}
@@ -464,8 +465,8 @@ export function CalendarGrid({ className }: CalendarGridProps) {
                 ))}
             </div>
 
-            <div className="overflow-auto flex-1">
-                <div className="grid grid-cols-7 bg-[#1a1a1a] gap-[1px] min-h-full">
+            <div className="">
+                <div className="grid grid-cols-7 bg-[#1a1a1a] gap-[1px]">
                     {days.map((day) => {
                         const isCurrentMonth = isSameMonth(day, monthStart);
                         const dayEvents = events.filter(e => isSameDay(new Date(e.date), day));
@@ -619,81 +620,83 @@ export function CalendarGrid({ className }: CalendarGridProps) {
                                         </PopoverClose>
                                     </div>
 
-                                    <div className="p-4 space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar">
-                                        {dayEvents.length === 0 ? (
-                                            <p className="text-gray-400 text-sm text-center py-2">No hay actividades</p>
-                                        ) : (
-                                            dayEvents.map((event) => {
-                                                const style = (EVENT_TYPES as any)[event.type] || EVENT_TYPES.CHURCH_MEETING_VISTA_AL_MAR;
-                                                const IconComp = style.icon ? null : ICON_MAP[style.iconName];
+                                    <ScrollArea className="h-[300px] w-full px-4">
+                                        <div className="space-y-3 pb-4 pt-4">
+                                            {dayEvents.length === 0 ? (
+                                                <p className="text-gray-400 text-sm text-center py-2">No hay actividades</p>
+                                            ) : (
+                                                dayEvents.map((event) => {
+                                                    const style = (EVENT_TYPES as any)[event.type] || EVENT_TYPES.CHURCH_MEETING_VISTA_AL_MAR;
+                                                    const IconComp = style.icon ? null : ICON_MAP[style.iconName];
 
-                                                return (
-                                                    <div key={event.id} className={cn(
-                                                        "p-3 rounded-lg border flex flex-col gap-2 shadow-sm relative group/item",
-                                                        style.softBg,
-                                                        style.borderColor
-                                                    )}>
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setEventToDelete(event.id);
-                                                            }}
-                                                            className="absolute top-2 right-2 text-white/40 hover:text-red-400 opacity-0 group-hover/item:opacity-100 transition-opacity"
-                                                        >
-                                                            <X className="w-4 h-4" />
-                                                        </button>
+                                                    return (
+                                                        <div key={event.id} className={cn(
+                                                            "p-3 rounded-lg border flex flex-col gap-2 shadow-sm relative group/item",
+                                                            style.softBg,
+                                                            style.borderColor
+                                                        )}>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setEventToDelete(event.id);
+                                                                }}
+                                                                className="absolute top-2 right-2 text-white/40 hover:text-red-400 opacity-0 group-hover/item:opacity-100 transition-opacity"
+                                                            >
+                                                                <X className="w-4 h-4" />
+                                                            </button>
 
-                                                        {/* Header */}
-                                                        <div className="flex items-start gap-3 pr-6">
-                                                            <div className={cn("mt-0.5 shrink-0", style.textColor)}>
-                                                                {style.icon ? (
-                                                                    <Image src={style.icon} alt="i" width={18} height={18} className="w-4.5 h-4.5 brightness-0 invert" />
-                                                                ) : (
-                                                                    IconComp && <IconComp className="w-4.5 h-4.5" />
-                                                                )}
+                                                            {/* Header */}
+                                                            <div className="flex items-start gap-3 pr-6">
+                                                                <div className={cn("mt-0.5 shrink-0", style.textColor)}>
+                                                                    {style.icon ? (
+                                                                        <Image src={style.icon} alt="i" width={18} height={18} className="w-4.5 h-4.5 brightness-0 invert" />
+                                                                    ) : (
+                                                                        IconComp && <IconComp className="w-4.5 h-4.5" />
+                                                                    )}
+                                                                </div>
+                                                                <div className="flex flex-col flex-1 min-w-0">
+                                                                    <span className={cn("font-bold text-sm leading-tight", style.textColor)}>
+                                                                        {event.title}
+                                                                    </span>
+                                                                    {event.supervisor && (
+                                                                        <div className="text-xs text-gray-400 flex items-center gap-1 mt-1">
+                                                                            <span className="opacity-70">Sup:</span> {event.supervisor.name}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
                                                             </div>
-                                                            <div className="flex flex-col flex-1 min-w-0">
-                                                                <span className={cn("font-bold text-sm leading-tight", style.textColor)}>
-                                                                    {event.title}
-                                                                </span>
-                                                                {event.supervisor && (
-                                                                    <div className="text-xs text-gray-400 flex items-center gap-1 mt-1">
-                                                                        <span className="opacity-70">Sup:</span> {event.supervisor.name}
-                                                                    </div>
-                                                                )}
-                                                            </div>
+
+                                                            {/* Members/Avatars in Detail View */}
+                                                            {(event.assignments && event.assignments.length > 0) && (
+                                                                <div className="flex flex-wrap gap-1 mt-2">
+                                                                    {event.assignments.map((a: any) => (
+                                                                        <TooltipProvider key={a.id}>
+                                                                            <Tooltip>
+                                                                                <TooltipTrigger asChild>
+                                                                                    <Avatar className={cn(
+                                                                                        "w-6 h-6 border border-white/10",
+                                                                                        currentUser?.id === a.user.id && "ring-2 ring-primary ring-offset-1 ring-offset-[#2a2a2a]"
+                                                                                    )}>
+                                                                                        <AvatarImage src={a.user.image} />
+                                                                                        <AvatarFallback className="text-[9px] bg-gray-700 text-white">
+                                                                                            {a.user.name.substring(0, 2).toUpperCase()}
+                                                                                        </AvatarFallback>
+                                                                                    </Avatar>
+                                                                                </TooltipTrigger>
+                                                                                <TooltipContent className="bg-black/90 text-white text-xs border-white/10">
+                                                                                    <p>{a.user.name}</p>
+                                                                                </TooltipContent>
+                                                                            </Tooltip>
+                                                                        </TooltipProvider>
+                                                                    ))}
+                                                                </div>
+                                                            )}
                                                         </div>
-
-                                                        {/* Members/Avatars in Detail View */}
-                                                        {(event.assignments && event.assignments.length > 0) && (
-                                                            <div className="flex flex-wrap gap-1 mt-2">
-                                                                {event.assignments.map((a: any) => (
-                                                                    <TooltipProvider key={a.id}>
-                                                                        <Tooltip>
-                                                                            <TooltipTrigger asChild>
-                                                                                <Avatar className={cn(
-                                                                                    "w-6 h-6 border border-white/10",
-                                                                                    currentUser?.id === a.user.id && "ring-2 ring-primary ring-offset-1 ring-offset-[#2a2a2a]"
-                                                                                )}>
-                                                                                    <AvatarImage src={a.user.image} />
-                                                                                    <AvatarFallback className="text-[9px] bg-gray-700 text-white">
-                                                                                        {a.user.name.substring(0, 2).toUpperCase()}
-                                                                                    </AvatarFallback>
-                                                                                </Avatar>
-                                                                            </TooltipTrigger>
-                                                                            <TooltipContent className="bg-black/90 text-white text-xs border-white/10">
-                                                                                <p>{a.user.name}</p>
-                                                                            </TooltipContent>
-                                                                        </Tooltip>
-                                                                    </TooltipProvider>
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                );
-                                            })
-                                        )}
-                                    </div>
+                                                    );
+                                                })
+                                            )}
+                                        </div>
+                                    </ScrollArea>
 
                                     {renderEventForm(false)}
                                 </PopoverContent>

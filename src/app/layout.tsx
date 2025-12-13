@@ -5,9 +5,16 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Providers } from "@/components/providers/Providers";
 
 export const metadata: Metadata = {
-  title: "Ministry Organizer",
+  title: "Punto Conexión",
   description: "Organización de ministerio",
+  icons: {
+    icon: "/images/logo.png",
+  },
 };
+
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+// ... (existing imports)
 
 export default function RootLayout({
   children,
@@ -16,12 +23,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${inter.variable} ${urbanist.variable} ${outfit.variable}`}>
-      <body className="antialiased min-h-screen flex flex-col bg-[#1A1A1A]" suppressHydrationWarning>
+      <body className="antialiased h-screen overflow-hidden flex flex-col bg-[#1A1A1A]" suppressHydrationWarning>
         <Providers>
           <Navbar />
-          <main className="flex-1">
-            {children}
-          </main>
+          <ScrollArea className="h-full w-full">
+            <main className="flex-1">
+              {children}
+            </main>
+          </ScrollArea>
         </Providers>
       </body>
     </html>
